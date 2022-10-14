@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head_title %}{{ block.super }} | {{ object.slug }}{% endblock head_title %}
+
+{% block content %}
+    <div class="container shapka">
+        <div class="row">
+            <div class="col">
+                <img class="img-fluid" src="{% static '/img/logo_small.jpg' %}">
+            </div>
+            <div class="col">
+                <p class="text-right small">
+                    ЧТУП «Трэвэл Лаб»<br>
+                    Республика Беларусь, г. Минск,<br>
+                    ул. Веры Хоружей, д.1а, помещение 10<br>
+                    ЗАО Альфа Банк, БИК - ALFABY2X <br>
+                    Р/С BY25 ALFA 3012 2669 3200 1027 0000 <br>
+                    web: www.travellab.by<br>
+                    e-mail: info@travellab.by<br>
+                    Тел. +375293694589, +375297779723<br>
+                    УНП 192689959 <br>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <p class="text-center font-weight-bold">
+                    Счет-фактура № {{ object.slug }}<br>
+                    Дата выдачи {{ object.timestamp|date:"d.m.Y" }}
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <p>Комитент: ЧТУП  "Трэвэл Лаб"</p>
+            </div>
+            <div class="col">
+                <p class="text-right">Комиссионер: {{ object.agency.title }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <table class="table table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Наименование туристической услуги</th>
+                            <th>Дата заезда</th>
+                            <th>Ед. изм.</th>
+                            <th>Комиссия, %</th>
+                            <th>Кол-во</th>
+                            <th>Сумма, BYN</th>
+                            <th>Ставка НДС</th>
+                            <th>Сумма НДС, руб.</th>
+                            <th>Ставка налога на услуги</th>
+                            <th>Налог на услуги</th>
+                            <th>Сумма С НДС, BYN</th>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>Организация экскурсионного тура<br>
+                                <b>{{ object.dates.tour }}</b></td>
+                            <td>{{ object.dates.tour_date|date:"d.m.Y" }} - {{ object.dates.end_date|date:"d.m.Y" }}</td>
+                            <td>турист</td>
+                            <td>{{ object.dates.tour.comission }}</td>
+                            <td>{{ object.client.count }}</td>
+                            <td>{{ object.total }}</td>
+                            <td>Без НДС</td>
+                            <td> - </td>
+                            <td>Без НУ</td>
+                            <td> - </td>
+                            <td>{{ object.total }}</td>
+                        </tr>
+                        <tr>
+                            <td>1.1</td>
+                            <td>комиссионное вознаграждение комиссионера</td>
+                            <td></td>
+                            <td>турист</td>
+                            <td>{{ object.dates.tour.comission }}</td>
+                            <td>{{ object.client.count }}</td>
+                            <td>{{ object.agency_comission }}</td>
+                            <td>Без НДС</td>
+                            <td> - </td>
+                            <td>Без НУ</td>
+                            <td> - </td>
+                            <td>{{ object.agency_comission }}</td>
+                        </tr>
+                    <tr>
+                            <td colspan="6">ВСЕГО К ОПЛАТЕ с услугами сторонних организаций</td>
+                            <td>{{ object.total }} - {{ object.agency_comission }}</td>
+                            <td>Без НДС</td>
+                            <td> - </td>
+                            <td>Без НУ</td>
+                            <td> - </td>
+                            <td>{{ object.agency_comission }}</td>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <p>
+                        И.О. Директор ЧТУП "Трэвэл Лаб"<br>
+                        ____________________<br>
+                        Т. А. Тимовец<br>
+                        М.П.
+                </p>
+            </div>
+            <div class="col">
+                <p>
+                    Директор<br>
+                    ____________________<br>
+                    {{ object.agency.director }}<br>
+                    М.П.
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

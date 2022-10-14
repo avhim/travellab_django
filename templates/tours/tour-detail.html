@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+
+{% block head_title %}{{ block.super }}{{ object.name }}{% endblock head_title %}
+
+{% block content %}
+
+<div class="card bg-light bg-gradient text-white">
+  <img src="{{ object.main_image.url }}" class="img-fluid" alt="{{ object.name }}">
+  <div class="card-img-overlay">
+    <h5 class="card-title">{{ object.name }}</h5>
+    <p class="card-text">{{ object.title }}</p>
+    <p class="card-text">{{ object.price }} <del>{{ object.old_price }}</del> {{ object.currency }}</p>
+  </div>
+</div>
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+<!--             <div class="card card-border mb-3 sticky-top card-mobile-nav-detail" style="top: 70.1875px;">
+                <div class="card-body p-3">
+                    <nav class="nav bg-white nav-decoration nav-hor-scroll hidden-scroll-bar" id="nav-tour-detail">
+                        <a class="nav-link active" href="#overview">О туре</a>
+                        <a class="nav-link" href="#gallery">Галерея</a>
+                        <a class="nav-link" href="#program">Программа</a>
+                        <a class="nav-link" href="#cost">Стоимость</a>
+                        <a class="nav-link" href="#review">Отзывы</a>
+                    </nav>
+                </div>
+            </div> -->
+            <section data-spy="scroll" id="overview">
+                <h2 class="h2 text-center text-md-left">О туре</h2>
+                <div class="card card-border">
+                    <div class="card-body">
+                        <p>{{ object.short_title }}</p>
+                        <div class="hr mb-3"></div>
+                        <ul class="list list-hor mb-0">
+                            <li class="list-item d-flex align-items-center">
+                                <span class="icon-clock mr-2"></span>Продолжительность (дней): <b class="ml-1"> {{ object.num_days }}</b>
+                                </li>
+                            <li class="list-item d-flex align-items-center flex-wrap">
+                                <span class="icon-place-localizer mr-2"></span>Направление: <b class="ml-1"> Беларусь</b>
+                            </li>
+                            <li class="list-item d-flex align-items-center flex-wrap">
+                                <span class="icon-place-localizer mr-2"></span>Начало тура: <b class="ml-1"> Минск</b>
+                            </li>
+                            <li class="list-item d-flex align-items-center flex-wrap">
+                                <span class="icon-map2 mr-2"></span>Маршрут: <b class="ml-1"> {{ object.route }}</b>
+                            </li>
+                            <li class="list-item d-flex align-items-center flex-wrap">
+                                <span class="icon-calendar mr-2"></span>Даты тура:
+                                    <b class="ml-1">
+                                    {% for tdate in tdq %}
+                                        {{ tdate.tour_date|date:"d.m.Y" }} ,
+                                    {% empty %}
+                                    Даты под запрос
+                                    {% endfor %}</b>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            <section data-spy="scroll" id="gallery" class=" pb-5">
+                <h2 class="h2 text-center text-md-left">Галерея</h2>
+                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="true">
+                  <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                  </div>
+                  <div class="carousel-inner">
+                    {% for i in object.tourimage_set.all %}
+                    <div class="carousel-item active">
+                      <img src="{{ i.images.url }}" class="d-block w-100" alt="...">
+                    </div>
+                    {% endfor %}
+                  </div>
+                  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                  </button>
+                  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                  </button>
+                </div>
+            </section>
+            <section data-spy="scroll" id="program" class="pb-5">
+                <h2 class="h2 text-center text-md-left">Программа тура по дням</h2>
+                <div class="accordion" id="accordionPanelsStayOpenExample">
+                    {% for day in object.tourdays_set.all %}
+                        <div class="accordion-item">
+                        <h2 class="accordion-header" id="panelsStayOpen-heading{{ forloop.counter }}">
+                          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="panelsStayOpen-collapse{{ forloop.counter }}">
+                            {{ day.descriptionDay }}
+                          </button>
+                        </h2>
+                        <div id="panelsStayOpen-collapse{{ forloop.counter }}" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-heading{{ forloop.counter }}">
+                          <div class="accordion-body">
+                            {{ day.days }}
+                          </div>
+                        </div>
+                        </div>
+                  {% endfor %}
+                </div>
+            </section>
+            <section data-spy="scroll" id="cost" class="pb-5">
+                <h2 class="h2 text-center text-md-left">Стоимость</h2>
+                <div class="accordion" id="accordionExample">
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Входит в стоимость
+                      </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                      <div class="accordion-body">
+                        {{ object.included|safe }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        Не входит в стоимость
+                      </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                      <div class="accordion-body">
+                        {{ object.not_included|safe }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </section>
+            <section data-spy="scroll" class="pb-5">
+                <h2 class="h2 text-center text-md-left">Примечание</h2>
+                <div class="card card-border">
+                    <div class="card-body">
+                        <p>Туристический оператор «Travel Lab» оставляет за собой право вносить некоторые изменения в программу тура без уменьшения общего объема и качества услуг, осуществлять замену заявленных отелей на равнозначные (в случае обстоятельств, вызванных причинами, от фирмы «Travel Lab» не зависящими). Компания «Travel Lab» не несет ответственности за задержки, связанные с простоем на границах, пробками на дорогах. Время отправления и прибытия указаны ориентировочные. Окончательное время отправления объявляется непосредственно за сутки до отъезда группы.</p>
+                    </div>
+                </div>
+            </section>
+            <section data-spy="scroll" class="pb-5" id="date-price">
+                <h2 class="h2 text-center text-md-left">Даты и места</h2>
+                <div class="card">
+                    {% for t in tdq %}
+                        <div class="card-header">
+                            {{ t.tour_date|date:"d.m.Y" }} - {{ t.end_date|date:"d.m.Y" }}
+                        </div>
+                        <div class="card-body ">
+                            <div class="row">
+                            <div class="col-8">
+                                Количество мест - {{ t.active_quotas }}<br>
+                                Стоимость тура для взрослого - {{ t.price_adult }}{{ object.currency }} + {{ object.service_price }}BYN<br>
+                                Стоимость тура для ребенка - {{ t.price_child }}{{ object.currency }} + {{ object.service_price_child }}BYN<br>
+                            </div>
+                            <div class="col-4"><a href="{% url 'invoice-zayavka' t.id %}" type="button" class="btn btn-success">Забронировать</a></div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+        <div class="col-4">
+            <div class="sticky-top" style="top:80px">
+                <div class="card card-border mb-4">
+                    <div class="card-body py-3">
+                        <div class="d-flex align-items-center mb-2" id="bx_436938707_138">
+                            <!-- <img loading="lazy" src="/upload/resize_cache/iblock/99c/90_90_2/photo_2021_11_18_13_21_07.jpg" alt="" width="75px" height="75px" class="rounded-circle mr-4"> -->
+                            <div class="d-flex flex-grow-1 justify-content-between">
+                                <div>
+                                    <h5 class="">Анна</h5>
+                                    <a href="tel:+375293694589" class="h5">+375293694589</a>
+                                </div>
+                                <!-- <button type="button" class="btn btn-secondary my-auto ml-3  p-0 btn-lg click-to-callback-form" data-toggle="modal" data-target="#backCall">
+                                    <span class="icon icon-phone "></span>
+                                </button> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <form class="p-4 p-md-5 border rounded-3 bg-light">
+                      <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
+                        <label for="floatingInput">Как вас зовут?</label>
+                      </div>
+                      <div class="form-floating mb-3">
+                        <input type="tel" class="form-control" id="floatingInput" placeholder="Ваш телефон">
+                        <label for="floatingInput">Номер телефона</label>
+                      </div>
+                      <button class="w-100 btn btn-lg btn-primary" type="submit">Отправить</button>
+                    </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

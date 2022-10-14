@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block head_title %}{{ block.super }} Заявка {% endblock head_title %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Заявка</h5>
+                  </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ agency }}</h5>
+                    <p class="card-text">
+                        Название организации: {{ agency }}<br>
+                        УНП: {{ agency.unp }}<br>
+                        Банк: {{ agency.bank_name }}<br>
+                        БИК: {{ agency.bank_bik }}<br>
+                        Счет: {{ agency.bank_bill }}<br>
+                        Телефон: {{ agency.telephones }}<br>
+                        Email: {{ agency.user.email }}<br>
+                        Юр.Адрес: {{ agency.address }}<br>
+                        Директор: {{ agency.director }}<br>
+                    </p>
+                </div>
+                <hr>
+                <div class="card-body">
+                    <h5 class="card-text">Заявка на тур - "{{ tour }}", дата тура: {{ tour_date }}</h5>
+                </div>
+                <div class="card-body">
+                    <h5 class="mb-2">Данные туристов</h5>
+                    <form id="form-container" method="POST" class="">
+                        {% csrf_token %}
+                        {{ formset.management_form }}
+                        {% for form in formset %}
+                        <div class="client-form row g-3">
+                          <div class="col-md-6">
+                            {{ form.fio_tourist|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                            {{ form.fio_tourist_lat|as_crispy_field }}
+                            </div>
+                            <div class="col-md-2">
+                            {{ form.passport|as_crispy_field }}
+                            </div>
+                            <div class="col-md-4">
+                            {{ form.passport_id|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                            {{ form.place_issue|as_crispy_field }}
+                            </div>
+                            <div class="col-md-2">
+                            {{ form.date_passport_issue|as_crispy_field }}
+                            </div>
+                            <div class="col-md-2">
+                            {{ form.date_passport_exp|as_crispy_field }}
+                            </div>
+                            <div class="col-md-2">
+                            {{ form.date_birth|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                            {{ form.phone_number|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                            {{ form.registration|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                            {{ form.insurance|as_crispy_field }}
+                            </div>
+                        <hr>
+                        </div>
+                        {% endfor %}
+                        <button id="add-form" type="button" class="btn btn-success">Добавить туриста</button>
+                        <button type="submit" class="btn btn-primary">Создать заявку</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+ <script>
+        let clientForm = document.querySelectorAll(".client-form")
+        let container = document.querySelector("#form-container")
+        let addButton = document.querySelector("#add-form")
+        let totalForms = document.querySelector("#id_form-TOTAL_FORMS")
+
+        let formNum = clientForm.length-1
+        addButton.addEventListener('click', addForm)
+
+        function addForm(e){
+            e.preventDefault()
+
+            let newForm = clientForm[0].cloneNode(true)
+            let formRegex = RegExp(`form-(\\d){1}-`,'g')
+
+            formNum++
+            newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${formNum}-`)
+            container.insertBefore(newForm, addButton)
+
+            totalForms.setAttribute('value', `${formNum+1}`)
+        }
+    </script>
+{% endblock content %}
