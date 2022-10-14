@@ -11,10 +11,10 @@
             <div class="card">
                 <div class="card-header">
                     <h5>Заявка</h5>
-                  </div>
+                </div>
                 <div class="card-body">
                     <h5 class="card-title">{{ agency }}</h5>
-                    <p class="card-text">
+                    <div class="card-text">
                         Название организации: {{ agency }}<br>
                         УНП: {{ agency.unp }}<br>
                         Банк: {{ agency.bank_name }}<br>
@@ -24,7 +24,7 @@
                         Email: {{ agency.user.email }}<br>
                         Юр.Адрес: {{ agency.address }}<br>
                         Директор: {{ agency.director }}<br>
-                    </p>
+                    </div>
                 </div>
                 <hr>
                 <div class="card-body">

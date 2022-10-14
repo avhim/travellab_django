@@ -1,15 +1,24 @@
-{% extends "base.html" %}
 {% load static %}
-{% block head_title %}{{ block.super }} | {{ object.slug }}{% endblock head_title %}
-
-{% block content %}
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{{ object.head_description }}">
+    <meta name="keywords" content="Travellab, трэвэл лаб, тревел лаб, трэвел лаб, тревэл лаб, {{ object.head_keywords }}">
+    <meta name="author" content="travellab">
+    <title>Travel Lab | Счет-фактура № {{ object.slug }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  </head>
+  <body>
     <div class="container shapka">
         <div class="row">
             <div class="col">
                 <img class="img-fluid" src="{% static '/img/logo_small.jpg' %}">
             </div>
             <div class="col">
-                <p class="text-right small">
+                <p class="text-end small">
                     ЧТУП «Трэвэл Лаб»<br>
                     Республика Беларусь, г. Минск,<br>
                     ул. Веры Хоружей, д.1а, помещение 10<br>
@@ -39,7 +48,7 @@
                 <p>Комитент: ЧТУП  "Трэвэл Лаб"</p>
             </div>
             <div class="col">
-                <p class="text-right">Комиссионер: {{ object.agency.title }}</p>
+                <p class="text-end">Комиссионер: {{ object.agency.title }}</p>
             </div>
         </div>
     </div>
@@ -52,7 +61,7 @@
                             <th>№</th>
                             <th>Наименование туристической услуги</th>
                             <th>Дата заезда</th>
-                            <th>Ед. изм.</th>
+                            <th>Ед. изм., турист</th>
                             <th>Комиссия, %</th>
                             <th>Кол-во</th>
                             <th>Сумма, BYN</th>
@@ -67,38 +76,38 @@
                             <td>Организация экскурсионного тура<br>
                                 <b>{{ object.dates.tour }}</b></td>
                             <td>{{ object.dates.tour_date|date:"d.m.Y" }} - {{ object.dates.end_date|date:"d.m.Y" }}</td>
-                            <td>турист</td>
+                            <td>взрс. - {{ object.tourists_qouta_adult }}<br>дети - {{ object.tourists_qouta_child }}</td>
                             <td>{{ object.dates.tour.comission }}</td>
                             <td>{{ object.client.count }}</td>
-                            <td>{{ object.total }}</td>
+                            <td>{{ object.ammount_total }}</td>
                             <td>Без НДС</td>
                             <td> - </td>
                             <td>Без НУ</td>
                             <td> - </td>
-                            <td>{{ object.total }}</td>
+                            <td>{{ object.ammount_total }}</td>
                         </tr>
                         <tr>
                             <td>1.1</td>
                             <td>комиссионное вознаграждение комиссионера</td>
                             <td></td>
-                            <td>турист</td>
+                            <td>взрс. - {{ object.tourists_qouta_adult }}<br>дети - {{ object.tourists_qouta_child }}</td>
                             <td>{{ object.dates.tour.comission }}</td>
                             <td>{{ object.client.count }}</td>
-                            <td>{{ object.agency_comission }}</td>
+                            <td>{{ object.comission }}</td>
                             <td>Без НДС</td>
                             <td> - </td>
                             <td>Без НУ</td>
                             <td> - </td>
-                            <td>{{ object.agency_comission }}</td>
+                            <td>{{ object.comission }}</td>
                         </tr>
                     <tr>
                             <td colspan="6">ВСЕГО К ОПЛАТЕ с услугами сторонних организаций</td>
-                            <td>{{ object.total }} - {{ object.agency_comission }}</td>
+                            <td>{{ object.ammount_to_pay }}</td>
                             <td>Без НДС</td>
                             <td> - </td>
                             <td>Без НУ</td>
                             <td> - </td>
-                            <td>{{ object.agency_comission }}</td>
+                            <td>{{ object.ammount_to_pay }}</td>
                         </tr>
                     </thead>
                 </table>
@@ -125,4 +134,9 @@
             </div>
         </div>
     </div>
-{% endblock content %}
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js" integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/365336f3dd.js" crossorigin="anonymous"></script>
+  </body>
+</html>

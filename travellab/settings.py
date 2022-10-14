@@ -152,7 +152,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "live-static", "media-root")
 INTERNAL_IPS = ["127.0.0.1"]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
+# SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = "agency-profile"

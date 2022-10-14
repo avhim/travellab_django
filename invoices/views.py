@@ -10,6 +10,8 @@ from agency.models import Agency
 from client.models import Client
 from tours.models import TourDayQuota
 
+from datetime import date
+from dateutil.relativedelta import relativedelta
 # Create your views here.
 
 
@@ -24,9 +26,12 @@ class InvoiceDetailView(LoginRequiredMixin, DetailView):
 
 
 def zayavka_create_view(request, id):
+    if request.user.is_authenticated:
+        agency = Agency.objects.get(user=request.user)
+    else:
+        agency = Agency.objects.none()
     tourdayqouta = TourDayQuota.objects.get(id=id)
     formset = ClientFormSet(queryset=Client.objects.none())
-    agency = Agency.objects.get(user=request.user)
     context = {
         "formset": formset,
         "tour": tourdayqouta.tour,
@@ -42,49 +47,25 @@ def zayavka_create_view(request, id):
             invoice.agency = agency
             invoice.tour = tourdayqouta.tour
             invoice.dates = tourdayqouta
-            invoice.tourists_qouta = len(client)
-            invoice.save()
+            kids = 0
+            adult = 0
             for c in client:
                 c.invoice = invoice
+                if c.date_birth > date.today()-relativedelta(years=16):
+                    kids += 1
+                else:
+                    adult += 1
+            invoice.tourists_qouta_child = kids
+            invoice.tourists_qouta_adult = adult
+            if tourdayqouta.tour.service_price:
+                total = tourdayqouta.tour.service_price*adult + tourdayqouta.tour.service_price_child*kids
+            else:
+                total = tourdayqouta.price_adult * adult + tourdayqouta.price_child * kids
+            invoice.ammount_total = total
+            invoice.comission = tourdayqouta.tour.comission/100 * total
+            invoice.ammount_to_pay = total - invoice.comission
+            invoice.save()
             formset.save()
             context['messages'] = 'Заявка №{} создана'.format(invoice.slug)
             return render(request, 'invoices/zayavka.html', context)
     return render(request, 'invoices/zayavka.html', context)
-
-
-# class ZayvkaAddView(TemplateView):
-#     template_name = 'invoices/zayavka.html'
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         tdq = TourDayQuota.objects.get(id=kwargs['id'])
-#         context['tour_date'] = tdq.tour_date
-#         context['tour'] = tdq.tour
-#         return context
-#
-#     def get(self, *args, **kwargs):
-#         # Create an instance of the formset
-#         context = super().get_context_data(**kwargs)
-#         context['formset'] = ClientFormSet(queryset=Client.objects.none())
-#         tdq = TourDayQuota.objects.get(id=kwargs['id'])
-#         context['tour_date'] = tdq.tour_date
-#         context['tour'] = tdq.tour
-#         return self.render_to_response(context)
-#
-#     def post(self, *args, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         formset = ClientFormSet(data=self.request.POST)
-#
-#         # Check if submitted forms are valid
-#         if formset.is_valid():
-#             formset.save(commit=False)
-#             invoice = Invoices.objects.create(slug=unique_slug_generator())
-#             invoice.agency = Agency.objects.get(user=self.request.user)
-#             invoice.dates = TourDayQuota.objects.get(kwargs['id'])
-#             invoice.tour = invoice.dates.tour
-#             invoice.save()
-#             formset.save()
-#             message = 'Заявка №{} создана'.format(invoice)
-#             return self.render_to_response({'messages': message})
-#         print(self.request.POST)
-#         return self.render_to_response({'formset': formset})

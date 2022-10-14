@@ -37,7 +37,7 @@ class Tours(models.Model):
     not_included = models.TextField(null=True, blank=True, verbose_name="Не включено в стоимость")
 
     # hotels = models.ForeignKey(Hotels, default=None, on_delete=models.PROTECT, verbose_name="Отели")
-    comission = models.FloatField(null=True, blank=True, default=40, verbose_name="Комиссия")
+    comission = models.FloatField(null=True, blank=True, default=10, verbose_name="Комиссия %")
     category = models.ManyToManyField('CategoryTour')
 
     manager = models.ManyToManyField(Manager, default=None, verbose_name="Менеджер")
