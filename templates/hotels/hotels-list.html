@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="col-md-9 mb-3">
+    {% for obj in object_list %}
+    <div class="row">
+        <div class="col-md-auto">
+            <a href="{{ obj.get_absolute_url }}"><img class="lazyload img-thumbnail" src='{{ obj.image_thumb.url }}'></a>
+        </div>
+        <div class="col-md">
+            <a href='{{ obj.get_absolute_url }}'><h3 class="card-title">{{ obj.title }}</h3></a>
+            <p>{{ obj.address }}</p>
+        </div>
+        <div class="col-md-auto text-end">
+            Рейтинг:<br>
+            Отзывов:ob
+            <a href="{{ obj.get_absolute_url }}" class="btn btn-success align-bottom" role="button">Подробнее</a>
+        </div>
+    </div>
+    <div class="card">
+        <a href="{{ obj.get_absolute_url }}"><img class='card-img-top lazyload' src='{{ obj.image_thumb.url }}'></a>
+        <div class="card-body">
+            <a href='{{ obj.get_absolute_url }}'><h3 class="card-title">{{ obj.title }}</h3></a>
+            <p class="card-text">{{ obj.description|truncatechars:150 }}</p>
+
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<hr/>
+
+{% endblock %}

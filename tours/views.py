@@ -1,8 +1,10 @@
 from django.views.generic import TemplateView, ListView, DetailView
-from client.forms import ClientForm
-from .models import Tours, TourDayQuota, CategoryTour
 from datetime import date
 from django.db.models import Count
+from client.forms import ClientForm
+from .models import Tours, TourDayQuota, CategoryTour
+from reviews.models import Comment
+
 
 
 class HomeView(ListView):
@@ -14,8 +16,6 @@ class HomeView(ListView):
 # context for extra models
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['categories'] = CategoryTour.objects.all()
-
         context['categories'] = CategoryTour.objects.filter(tours__active=True).annotate(cnt=Count('tours')).filter(cnt__gt=0)
         return context
 
@@ -37,11 +37,5 @@ class TourDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['tdq'] = TourDayQuota.objects.filter(tour__slug=self.kwargs['slug'], active=True, tour_date__gte=date.today())
+        context['comments'] = Tours.objects.get(slug=self.kwargs['slug']).comments.filter(active=True)
         return context
-
-
-# class TourListView(ListView):
-#     model = Tours
-#     template_name = 'tour/tours-list.html'
-#     queryset = Tours.objects.filter(active=True)
-#     paginate_by = 10

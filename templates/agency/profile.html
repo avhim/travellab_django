@@ -15,7 +15,7 @@
         {% endif %}
     <form action="{% url 'agency-profile' %}" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-                <div class="col-8">
+                <div class="col-md-8">
                     <div class="card card-body bg-white border-light shadow-sm mb-4">
                         <h2 class="h5 mb-4">Профиль {{ agency.title }}</h2>
                         <div class="row">
@@ -74,7 +74,7 @@
                                 <div class="form-group">
                                     <label for="telephones">Phone</label>
                                     <input name="telephones" class="form-control" id="telephones" type="tel"
-                                           placeholder="+375-29-369-45-89" value="{{ agency.telephones }}" required>
+                                           placeholder="Контактный телефон" value="{{ agency.telephones }}" required>
                                 </div>
                             </div>
                         </div>
@@ -109,13 +109,7 @@
                     </div>
                 </div>
         </form>
-    <div class="col-4">
-        <div class="card card-border mb-4">
-            <div class="card-header">
-                Создать заявку
-            </div>
-        </div>
-    </div>
+
     <div class="col-12">
         <h2>Список заказов</h2>
         <table class="table table-hover">

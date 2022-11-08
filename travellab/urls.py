@@ -33,6 +33,7 @@ urlpatterns = [
     path('dogovor/', include('dogovor.urls')),
     path('blog/', include('blog.urls')),
     path('invoice/', include('invoices.urls')),
+    path('hotels/', include('hotel.urls')),
     path('__debug__/', include('debug_toolbar.urls')),
 ]
 if settings.DEBUG:

@@ -3,15 +3,22 @@
 {% block head_title %}{{ block.super }}{{ object.name }}{% endblock head_title %}
 
 {% block content %}
-
-<div class="card bg-light bg-gradient text-white">
-  <img src="{{ object.main_image.url }}" class="img-fluid" alt="{{ object.name }}">
-  <div class="card-img-overlay">
-    <h5 class="card-title">{{ object.name }}</h5>
-    <p class="card-text">{{ object.title }}</p>
-    <p class="card-text">{{ object.price }} <del>{{ object.old_price }}</del> {{ object.currency }}</p>
-  </div>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="card text-white">
+              <img src="{{ object.main_image.url }}" class="img-fluid lazyload" alt="{{ object.name }}">
+              <div class="card-img-overlay">
+                <h5 class="card-title center">{{ object.name }}</h5>
+                <p class="card-text">{{ object.title }}</p>
+                <p class="card-text">{{ object.price }} <del>{{ object.old_price }}</del> {{ object.currency }}</p>
+              </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
 <div class="container py-5">
     <div class="row">
         <div class="col-lg-8">
@@ -62,17 +69,25 @@
                 <h2 class="h2 text-center text-md-left">Галерея</h2>
                 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="true">
                   <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                  </div>
-                  <div class="carousel-inner">
-                    {% for i in object.tourimage_set.all %}
-                    <div class="carousel-item active">
-                      <img src="{{ i.images.url }}" class="d-block w-100" alt="...">
-                    </div>
+                    {% for photo in object.gallery.all %}
+                        {% if forloop.first %}
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ forloop.counter0 }}" class="active" aria-current="true" aria-label="Slide {{ forloop.counter }}"></button>
+                        {% else %}
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ forloop.counter0 }}" aria-label="Slide {{ forloop.counter }"></button>
+                        {% endif %}
                     {% endfor %}
-                  </div>
+                    </div>
+                    <div class="carousel-inner">
+                        {% for photo in object.gallery.all %}
+                            {% if forloop.first %}
+                                <div class="carousel-item active  ">
+                            {% else %}
+                                <div class="carousel-item  ">
+                            {% endif %}
+                              <img src="{{ photo.image.url }}" class="d-block w-100" alt="">
+                            </div>
+                        {% endfor %}
+                    </div>
                   <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Previous</span>
@@ -90,7 +105,7 @@
                         <div class="accordion-item">
                         <h2 class="accordion-header" id="panelsStayOpen-heading{{ forloop.counter }}">
                           <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="panelsStayOpen-collapse{{ forloop.counter }}">
-                            {{ day.descriptionDay }}
+                            {{ day.descriptionDay|safe }}
                           </button>
                         </h2>
                         <div id="panelsStayOpen-collapse{{ forloop.counter }}" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-heading{{ forloop.counter }}">
@@ -132,6 +147,16 @@
                 </div>
             </section>
             <section data-spy="scroll" class="pb-5">
+                <h2 class="h2 text-center text-md-left">Отзывы по туру</h2>
+                <div class="card card-border" id="reviews">
+                    <div class="card-body">
+                        {% for comment in object.comments.all %}
+                            <p>{{ comment.author }} {{ comment.content }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+            <section data-spy="scroll" class="pb-5">
                 <h2 class="h2 text-center text-md-left">Примечание</h2>
                 <div class="card card-border">
                     <div class="card-body">
@@ -168,7 +193,7 @@
                             <!-- <img loading="lazy" src="/upload/resize_cache/iblock/99c/90_90_2/photo_2021_11_18_13_21_07.jpg" alt="" width="75px" height="75px" class="rounded-circle mr-4"> -->
                             <div class="d-flex flex-grow-1 justify-content-between">
                                 <div>
-                                    <h5 class="">Анна</h5>
+                                    <h5 class="">Ульяна</h5>
                                     <a href="tel:+375293694589" class="h5">+375293694589</a>
                                 </div>
                                 <!-- <button type="button" class="btn btn-secondary my-auto ml-3  p-0 btn-lg click-to-callback-form" data-toggle="modal" data-target="#backCall">
@@ -180,7 +205,7 @@
                 </div>
                     <form class="p-4 p-md-5 border rounded-3 bg-light">
                       <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
+                        <input type="text" class="form-control" id="floatingInput" placeholder="">
                         <label for="floatingInput">Как вас зовут?</label>
                       </div>
                       <div class="form-floating mb-3">

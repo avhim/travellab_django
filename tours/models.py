@@ -2,9 +2,14 @@ from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.db.models.signals import pre_save
-from .utils import end_date_generator
+from django.contrib.contenttypes.fields import GenericRelation
 
+from reviews.models import Comment
+from gallery.models import Gallery
 from managers.models import Manager
+from hotel.models import Hotel
+from gallery.fields import WEBPField
+from .utils import end_date_generator
 
 
 class Tours(models.Model):
@@ -15,17 +20,17 @@ class Tours(models.Model):
     head_keywords = models.TextField(null=True, blank=True, verbose_name="сео слова")
     head_description = models.TextField(null=True, blank=True, verbose_name="сео описание")
 
-    main_image = models.ImageField(upload_to='images/%Y/%m/%d', null=True, blank=True,
+    main_image = WEBPField(upload_to='images/tours/%Y/%m/%d', null=True, blank=True,
                                    verbose_name="Главное изображение")  # main image
     short_title = models.TextField(null=True, blank=True, verbose_name="краткое описание")
     title = models.TextField(null=True, blank=True, verbose_name="Заголовок на изображении")  # main image title
 
-    price = models.IntegerField(verbose_name="Цена")
+    price = models.DecimalField(max_digits=7, decimal_places=2, verbose_name="Цена")
     currency = models.CharField(max_length=10, default='$', verbose_name="валюта")
-    old_price = models.IntegerField(verbose_name="Старая цена")
+    old_price = models.DecimalField(max_digits=7, decimal_places=2, verbose_name="Старая цена")
 
-    service_price = models.IntegerField(null=True, blank=True, default='80', verbose_name="Туруслуга взрослый")
-    service_price_child = models.IntegerField(null=True, blank=True, default='40', verbose_name="Туруслуга детский")
+    service_price = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True, default='80', verbose_name="Туруслуга взрослый")
+    service_price_child = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True, default='40', verbose_name="Туруслуга детский")
 
     route = models.TextField(null=True, blank=True, verbose_name="Маршрут")
     country = models.CharField(max_length=30, null=True, blank=True, verbose_name="Страна")
@@ -36,12 +41,13 @@ class Tours(models.Model):
     included = models.TextField(null=True, blank=True, verbose_name="Включено в стоимость")
     not_included = models.TextField(null=True, blank=True, verbose_name="Не включено в стоимость")
 
-    # hotels = models.ForeignKey(Hotels, default=None, on_delete=models.PROTECT, verbose_name="Отели")
+    hotels = models.ManyToManyField(Hotel, verbose_name="Отели")
     comission = models.FloatField(null=True, blank=True, default=10, verbose_name="Комиссия %")
-    category = models.ManyToManyField('CategoryTour')
+    category = models.ManyToManyField('CategoryTour', verbose_name="Тип тура")
+    comments = GenericRelation(Comment, related_query_name='tour', verbose_name="Комментарии")
+    gallery = GenericRelation(Gallery, related_query_name='tour', verbose_name="Галерея")
 
     manager = models.ManyToManyField(Manager, default=None, verbose_name="Менеджер")
-    created_by = models.ForeignKey(User, blank=True, null=True, on_delete=models.PROTECT)
 
     timestamp = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
@@ -60,7 +66,7 @@ class Tours(models.Model):
 
 class TourImage(models.Model):
     tour = models.ForeignKey(Tours, default=None, on_delete=models.CASCADE)
-    images = models.ImageField(upload_to='images/%Y/%m/%d')
+    images = models.ImageField(upload_to='images/%Y/%m/%d', null=True, blank=True)
 
     class Meta:
         verbose_name = 'Изображение'
@@ -85,11 +91,11 @@ class TourDayQuota(models.Model):
     active = models.BooleanField(default=True)
     tour_date = models.DateField(null=True, verbose_name="Дата тура")
     end_date = models.DateField(null=True, blank=True, verbose_name="Конец тура")
-    total_quotas = models.IntegerField(null=True, blank=True, verbose_name="Всего мест")
-    active_quotas = models.IntegerField(verbose_name="Оставшиеся места")
-    sold_quotas = models.IntegerField(null=True, blank=True, verbose_name="Проданные места")
-    price_adult = models.IntegerField(verbose_name="Цена взрослый")
-    price_child = models.IntegerField(verbose_name="Цена детский")
+    total_quotas = models.PositiveIntegerField(null=True, blank=True, verbose_name="Всего мест")
+    active_quotas = models.PositiveIntegerField(verbose_name="Оставшиеся места")
+    sold_quotas = models.PositiveIntegerField(null=True, blank=True, verbose_name="Проданные места")
+    price_adult = models.DecimalField(max_digits=7, decimal_places=2, verbose_name="Цена взрослый")
+    price_child = models.DecimalField(max_digits=7, decimal_places=2, verbose_name="Цена детский")
 
     def __str__(self):
         return self.tour_date.strftime("%d-%m-%Y")
@@ -101,7 +107,7 @@ class TourDayQuota(models.Model):
 
 
 class CategoryTour(models.Model):
-    title = models.CharField(max_length=150, db_index=True, verbose_name="Тип тура")
+    title = models.CharField(max_length=150, verbose_name="Тип тура")
 
     def __str__(self):
         return self.title

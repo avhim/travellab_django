@@ -1,10 +1,13 @@
 from django.contrib import admin
+from django.contrib.contenttypes.admin import GenericStackedInline
+
 from .models import Tours, TourImage, TourDays, TourDayQuota, CategoryTour
+from gallery.models import Gallery
 
 
 # Register your models here.
-class TourImageAdmin(admin.StackedInline):
-    model = TourImage
+class TourImageAdmin(GenericStackedInline):
+    model = Gallery
     extra = 1
 
 
@@ -20,7 +23,7 @@ class TourDayQuotaAdmin(admin.TabularInline):
 @admin.register(Tours)
 class TourAdmin(admin.ModelAdmin):
     inlines = [TourImageAdmin, TourDaysAdmin, TourDayQuotaAdmin]
-    list_display = ["active", "name", "updated", "created_by"]
+    list_display = ["active", "name", "updated"]
     list_editable = ["active"]
     list_display_links = ["name"]
     list_filter = ["active"]
@@ -28,11 +31,6 @@ class TourAdmin(admin.ModelAdmin):
 
     class Meta:
         model = Tours
-
-
-@admin.register(TourImage)
-class TourImageAdmin(admin.ModelAdmin):
-    pass
 
 
 @admin.register(TourDays)

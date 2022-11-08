@@ -2,10 +2,10 @@
 
 {% block content %}
 
-<div class="col-9 mb-3">
+<div class="col-md-9 mb-3">
     {% for obj in object_list %}
     <div class="card">
-        <a href="{{ obj.get_absolute_url }}"><img class='card-img-top' src='{{ obj.main_image.url }}'></a>
+        <a href="{{ obj.get_absolute_url }}"><img class='card-img-top lazyload' src='{{ obj.main_image.url }}'></a>
         <div class="card-body">
             <h3 class="card-title"><a href='{{ obj.get_absolute_url }}'>{{ obj.name }}</a></h3>
             <p class="card-text">{{ obj.short_title }}</p>

@@ -41,10 +41,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    "debug_toolbar",
+    'debug_toolbar',
     'crispy_forms',
-    'django_htmx',
+    'webp_converter',
 
+    'hotel',
     'tours',
     'managers',
     'dogovor',
@@ -52,6 +53,8 @@ INSTALLED_APPS = [
     'agency',
     'invoices',
     'blog',
+    'reviews',
+    'gallery',
 ]
 
 MIDDLEWARE = [
@@ -63,7 +66,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "debug_toolbar.middleware.DebugToolbarMiddleware",
-    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = 'travellab.urls'
@@ -79,6 +81,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'webp_converter.context_processors.webp_support',
             ],
         },
     },
@@ -99,6 +102,15 @@ DATABASES = {
         'PORT': '',
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
